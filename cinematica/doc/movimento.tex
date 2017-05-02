@@ -1,0 +1,123 @@
+\documentclass[12pt,oneside,a4paper]{article}
+
+%% Language and font encodings
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb,tikz,pdftexcmds,xparse}
+
+
+%change caption of contents e appendices
+
+\addto\captionsenglish{% Replace "english" with the language you use
+	\renewcommand{\figurename}{Figura}%
+	\renewcommand{\contentsname}{Table of Contents}%
+	\renewcommand{\contentsname}{Contenuti}
+}
+
+
+%% Give you the possibiliy of split text
+\usepackage{seqsplit}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%%allow to break url
+\usepackage[hyphens]{url}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{ {./immagini/} }
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=black]{hyperref}
+\usepackage{todonotes}
+\usepackage{multicol}
+
+%appendice 
+\usepackage[toc,page]{appendix}
+\renewcommand\appendixtocname{Appendice}
+\renewcommand\appendixpagename{Appendice}
+%% Personal function
+
+%no label
+\usepackage[nolabel, final]{showlabels}
+
+%% Solidity env, per ora è java
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=Java,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3
+}
+
+
+	\title{Movimento di un robot 2 motori rear e una sfera front}
+	\author{Luca Vecchi - STUFFCUBE}
+	\date{20 Aprile 2017}
+
+\begin{document}
+	%\input{./Struttura/Frontespizio.tex}
+	
+
+	\maketitle
+	\clearpage
+
+
+
+	%	\input{Struttura/Introduzione.tex}
+	
+	\section{Curvatura}
+	
+	Vogliamo astrarre il movimento di Arianna in due tipologie diverse: rette e circonferenze. Una futura implementazione delle curve bezier (manca di trovare come fare l'offset e di modificare il path) potrà dare una completa gestione dei movimenti potendo controllare anche l'angolo di arrivo al punto.
+	
+	Possiamo considerare il contenuto informativo di $S_0 \bigcup r_0$ al pari di $\alpha \bigcup r_0$ e $S_0 \bigcup \alpha$ per via delle ovvie uguaglianze.
+	Nel nostro caso per le rette andremo a definire la funzione \textit{Retta} come segue:
+	retta ($S_0$): $S_s , S_d$
+	
+	, mentre nel caso delle circonferenze:
+	
+	circ($\alpha$,$r_o$,$\Delta$):  $S_s , S_d$
+	
+	dove $\delta$ è la distanza tra il centro del robot e la circonferenza tracciata dal movimento del centro delle ruote.
+	
+	\begin{equation*}
+	S_0 \equiv \alpha * 2 * \pi * r_0 \div 360
+	\end{equation*}
+	\begin{equation*}
+	S_1 \equiv \alpha * 2 * \pi * (r_0 - \Delta) \div 360
+	\end{equation*}	
+	\begin{equation*}
+	S_2 \equiv \alpha * 2 * \pi * (r_0 + \Delta) \div 360
+	\end{equation*}
+	
+	Come si evince dall'immagine \ref{fig:circonferenze} si può notare le circonferenze concentriche, rappresentate dalla più interna verso l'esterna, come il tragitto effettuato dalla ruota più interna, dal centro del robot e dalla ruota più esterna.
+	
+	La difficoltà sta nella gestione dei motori in modo sincrono in quanto perchè il centro del robot effettui una circonferenza perfetta, la velocità delle ruote deve essere mantenuta costante\footnote{Vedi libreria Accelstepper}.
+	
+	
+	\clearpage
+
+
+	%% Bibliography .bib
+	%\bibliography{./Struttura/bib.bib}
+	%\bibliographystyle{unsrt}	
+\end{document}

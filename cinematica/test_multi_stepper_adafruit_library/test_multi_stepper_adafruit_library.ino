@@ -13,11 +13,11 @@ AccelStepper SxMotor = AccelStepper(1,SXSTEP,SXDIR);//low to high transition mak
 AccelStepper DxMotor = AccelStepper(1,DXSTEP,DXDIR);
 
 void setup() {
-  Serial.begin(9600);
-  SxMotor.setMaxSpeed(800);
-  DxMotor.setMaxSpeed(800);
-  SxMotor.setAcceleration(200);
-  DxMotor.setAcceleration(200);
+  Serial.begin(115200);
+  SxMotor.setMaxSpeed(400000);
+  DxMotor.setMaxSpeed(400000);
+  SxMotor.setAcceleration(3000);
+  DxMotor.setAcceleration(3000);
   
 }
 
@@ -25,6 +25,7 @@ void loop() {
   int s;
   int d;
   byte c;
+  long tempo;
   while (Serial.available() > 0) {
     c = Serial.read();
     switch(c){
@@ -41,6 +42,8 @@ void loop() {
                 while(DxMotor.distanceToGo()!= 0 || SxMotor.distanceToGo() != 0){
                   SxMotor.run();
                   DxMotor.run();
+                  Serial.println( millis()- tempo);
+                  tempo=millis();
                 }
                 break;
 //      default: Serial.print("NON compriendo");

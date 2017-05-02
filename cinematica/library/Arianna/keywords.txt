@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Verso	KEYWORD1
+Arianna	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+setGeometry	KEYWORD2
+circle	KEYWORD2
+line	KEYWORD2
+move	KEYWORD2
+runToDistance	KEYWORD2
+getCurrentPosition	KEYWORD2
+getCurrentAngle	KEYWORD2
+
+######################################
+# Constants (LITERAL1)
+#######################################
+DELTAWHEEL	LITERAL1
+STEPONMM	LITERAL1
