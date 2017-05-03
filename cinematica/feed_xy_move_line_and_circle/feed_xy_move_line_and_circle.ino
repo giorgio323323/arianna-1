@@ -9,9 +9,8 @@ enum Mode{ABS,REL};//modalità G0-1
 int SXDIR = 6, SXSTEP = 7, DXDIR = 4, DXSTEP = 5, ENABLE = 3;
 
 const float DEG = 0.1125;
-const unsigned int DIAMETER = 72;
+const unsigned int DIAMETER = 74;
 const unsigned int DELTAWHEEL = 172; //mm
-
 
 //Arianna arianna(SXSTEP, SXDIR, DXSTEP, DXDIR, ENABLE);
 
@@ -130,8 +129,8 @@ void circle(float alpha,long r0, Verso v){
 }
 void line(long p){
   _line(p);//TODO inserire linee di debug
-  _setDistance();
-  runToDistance();
+  //_setDistance();
+  //runToDistance();
 }
 void move(long x, long y,float angolo,long * currX, long * currY){
   //_positions[0]+=_TOSTEP(x);
@@ -235,6 +234,15 @@ void _line(long _pos){
   #endif
   _positions[0]+=_STEPONMM*_pos; 
   _positions[1]+=_STEPONMM*_pos;
+  
+  _SxMotor.move( _positions[0]);//È IN CORDINATE ASSOLUT, DEVO RIMAPPARLO IN ASSOLUTO.
+  _DxMotor.move(_positions[1]);
+  
+  while(_DxMotor.distanceToGo()!= 0 || _SxMotor.distanceToGo() != 0){
+                  _SxMotor.run();
+                  _DxMotor.run();
+                }
+                
 }
 //s1 è lo spazioe seguito dalla ruota sinistra :
 //nel caso di verso antiorario positivo il centro della circonferenza è a sinistra della ruota sinistra (il roboto gira verso sinistra)
