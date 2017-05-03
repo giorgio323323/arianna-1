@@ -8,7 +8,7 @@ const unsigned int DELTAWHEEL = 172; //mm
 
 
 Arianna arianna(SXSTEP, SXDIR, DXSTEP, DXDIR, ENABLE);
-
+//Arianna arianna = new Arianna(SXSTEP, SXDIR, DXSTEP, DXDIR, ENABLE);
 #define DEBUG //for debug purprose
 
 void setup() {

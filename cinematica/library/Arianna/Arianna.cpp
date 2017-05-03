@@ -1,6 +1,6 @@
 #include "Arduino.h"
 #include "Arianna.h"
-//#define DEBUG
+#define DEBUG
 
 Arianna::Arianna(const int STEPSX,const int DIRSX,const int STEPDX,const int DIRDX,const int ENABLE){
   //setup the single proprierty of stepper
@@ -12,6 +12,7 @@ AccelStepper _DxMotor(AccelStepper::DRIVER,STEPDX,DIRDX);
   _DxMotor.setAcceleration(200);
   
   //build the array (up to 10 stepper) that work toghter
+  MultiStepper _steppers;
   _steppers.addStepper(_SxMotor);
   _steppers.addStepper(_DxMotor);
   _positions[0] = 0;// la libreria usa cordinate assolute, in futuro si sistema
