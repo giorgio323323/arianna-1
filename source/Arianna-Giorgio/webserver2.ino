@@ -35,8 +35,18 @@ void handleRoot() {
 }
 void risposta() {
   digitalWrite(led, 1);
-  Serial.println(server.arg(0));
-  server.send(200, "text/plain", "parto verso "+server.arg(0));
+  Serial.println(server.arg(0));    // invio comando ad arianna
+   
+   String _risposta = "";
+   char finito = 1;
+   while (finito){
+      if (Serial.available >0){
+         char = Serial.read();
+         if (inChar  != '\n')      _risposta += char;
+         else finito = 0;
+      }
+   }
+  server.send(200, "text/plain", "answ: " + _risposta);
   digitalWrite(led, 0);
 }
 
@@ -98,4 +108,7 @@ void loop(void){
   http.begin("http://192.168.1.12/test.html"); //HTTP
   http.end();
   server.handleClient();
+   
+   
+   
 }
