@@ -1,0 +1,267 @@
+note sulla divisione del sistema Arianna
+
+il sistema è suddiviso su tre parti logiche e volendo anche hardware
+
+lo chiamo Attuatore, anche se il termine può essere improprio: 
+	si occupa della gestione dei sensori e degli attuatori. 
+	
+	un Arduino controlla la velocità, direzione, misura lo spostamento delle ruote.
+	legge i sensori di distanza dagli oggetti.
+	governa il sensore di puntamento del libro.
+	restituisce informazioni sul suo stato.
+
+	ha delle funzioni primitive che vengono comandate via seriale da un livello superiore
+
+	ho trovato che delle primitive utili sono:
+
+		movimento con arresto al superamento della Distanza obbiettivo
+			il movimento può essere:
+				con direzione imposta dal supervisore scrivendo angolo di sterzo 
+				con direzione controllata in modo da stare a a una certa distanza dalla
+				parete sx o dx. Il controllo regola lo sterzo
+				per mantenere la parete a una certa distanza.
+		
+		definire la velocità di crociera
+		definire la distanza da percorrere
+		
+		nel mio caso ho montato un sensore a ultrasuoni sul frontale. Posso ruotarlo
+		a piacere con un servo (PAN). da qui i comandi A e m.
+		Sul PAN c'è un servo che fa il TILT del puntatore.
+		Giunti allo scaffale il robot arretra curvando per allontanarsi dallo scaffale.
+		L'incertezza della fermata la correggo effettuando delle misure della distanza
+		dalla libreria, la minima distanza indica che il sensore (PAN) è perpendicolare.
+		In base alla distanza dalla libreria e all'altezza del ripiano calcolo l'angolo
+		di TILT e così posso puntare.
+		
+		lo script farebbe:
+		riceve dati da Interfaccia (vedi sotto)
+		comando moto con sensore sx per una distanza D = Dscaffale
+		all'arresto moto con sterzo imposto e distanza D = -distanza di arrestramento
+		algortimo di ricerca m minima in funzione dell'angolo
+		invio angolo di TILT in funzione di m trovata e altezza ripiano
+		accendi puntatore
+		
+		voilà, le jeux sont fait
+		
+		
+		
+			S Scrivo sterzo e suo angolo						[gradi] 90 diritto 
+																		180 dx
+																		0   sx
+			D scrivo distanza relativa da percorrere e valore 	[mm]
+			d lettura distanza assoluta (odometro)				[mm]
+			V scrivo setpoint velocita' con valore motorSpeedValue
+			v leggo velocità (motorSpeedRef)
+			e errore
+			l libero (viaLibera) stato sensore anteriore
+			r statoRun	
+			R statoRun (scrivi) 0: fermo, 1: controllo con sensore dx, 2: sterzo esterno
+			  si ferma al superamento quando odometro supera la D attiva 
+			A angolo sonar
+			m misura con sonar [cm]
+
+
+Supervisore, anche questo termine può essere rivisto: 
+	tramite seriale comanda le primitive dell'attuatore per comporle in movimenti organici e complessi.
+	riceve indicazioni su cosa fare dall'Interfaccia con la biblioteca
+	
+	
+Interfaccia, è un software che gira sul pc della biblioteca. 
+	A partire dal codice del libro interroga il dataBase che restituisce un record contenente:
+	numero scaffale
+	numero ripiano
+	posizione x, y, z del centro del ripiano dove giace il libro
+	
+	Passa queste informazioni al SUpervisore.
+	
+	questo DB deve essere popolando manualemnte censendo i ripiani della biblioteca e individuando il libri 
+	posti agli estremi del ripiano.
+	
+	il nostro scopo non è puntare il libro ma il ripiano che lo contiene.
+	
+	
+La comunicazione tra Attuatore e Supervisore
+
+	Avviene tramite seriale. Indipendentemente da come verrà fatto il supervisore (Raspberry, ESP, altro) 
+	ho trovato comoda una interfaccia a misura "umana", cioè con stringhe di comando mnemoniche, un poco tipo
+	Gcode. Questo permette di testare il sistema con una interfaccia seriale testuale (es quella nell'IDE
+	di Arduino).
+	Dispone di un semplice l'acknowledge di ricezione comando e un timeout.
+	
+	Sul supervisore si possono realizzare dei semplici script che sfruttano le funzioni base per
+	farne di complesse.
+	
+	Se concordiamo di renderla comune possiamo condividere diverse cose. 
+	
+	metto in fondo lo snippet di codice che la realizza e descrive:
+
+// 
+
+
+
+
+	
+
+	/*
+	verifica se arrivano caratteri da seriale
+	considero un pacchetto con la forma char1 (comando) seguito da un eventuale parametro
+	In maiscolo i valori che scrivo
+	in minuscolo quelli che leggo
+	
+	char 1:	parametro modificato, 
+			S Scrivo sterzo e suo angolo						[gradi] 90 diritto 
+																		180 dx
+																		0   sx
+			D scrivo distanza relativa da percorrere e valore 	[mm]
+			d lettura distanza assoluta (odometro)				[mm]
+			V scrivo setpoint velocita' con valore motorSpeedValue
+			v leggo velocità (motorSpeedRef)
+			e errore
+			l libero (viaLibera) stato sensore anteriore
+			r statoRun	
+			R statoRun (scrivi) 0: fermo, 1: controllo con sensore dx, 2: sterzo esterno
+			  si ferma al superamento quando odometro supera la D attiva 
+			A angolo sonar
+			m misura con sonar [cm]
+			
+			
+*/
+
+void getCmd(void){
+static float x, y;
+static char smComandi = 0;
+static char inCmd;
+static unsigned long time, cmdTime;
+
+	// se il pacchetto non arriva completo in un secondo 
+	// resetto ricezione
+	if ((smComandi != 0) && ((millis() - cmdTime) > 1000 )) {
+		Serial.println('Timeout');
+		smComandi = 0;
+	}
+
+
+	if (Serial.available() > 0) {
+
+
+		switch (smComandi) {
+			case 0: // attesa 1rst valore
+
+				inCmd = Serial.read();
+				cmdTime = millis();
+				
+				switch (inCmd) {
+		
+					// scrivo valore
+					case 'S': 
+					case 'D': 
+					case 'R': 
+					case 'V': 
+					case 'A': 
+							smComandi = 1;		// stato a seconda del numero di
+												// parametri da ricevere
+						break;
+		
+					case 'd': 
+					case 'e': 
+					case 'v': 
+					case 'l': 
+					case 'r': 
+					case 'm': 
+							smComandi = 2;		// stato a seconda del numero di
+												// parametri da ricevere
+												// questa è lettura quindi segue subito risposta
+						break;
+				}
+				break;
+			case 1: // attende 1 valore
+				// look for the next valid integer in the incoming serial stream:
+				x = Serial.parseInt();
+				smComandi = 2; 	// mette in esecuzione valore
+				break;	
+				
+			case 2: // attesa terminatore
+
+				if (Serial.read() != '\n') break;
+				
+				switch (inCmd) {
+					case 'S': 
+							angoloSterzo = x;
+							smComandi = 0;		
+							Serial.print("S: ");
+							Serial.println(angoloSterzo);
+						break;
+		
+					case 'D': 
+							distanza += x;
+							smComandi = 0;		
+							Serial.print("D: ");
+							Serial.println(distanza);
+						break;
+		
+					case 'R': 
+							statoRun = x;
+							smComandi = 0;		
+							Serial.print("R: ");
+							Serial.println(statoRun);
+						break;
+
+					case 'V': 
+							motorSpeedValue = x;
+							smComandi = 0;		
+							Serial.print("V: ");
+							Serial.println(motorSpeedValue);
+						break;
+		
+					case 'A': 
+							sonarAngle = x;
+							smComandi = 0;		
+							Serial.print("A: ");
+							Serial.println(sonarAngle);
+						break;
+		
+					case 'd': 
+							smComandi = 0;		
+							Serial.print("d: ");
+							Serial.println(odometro);
+						break;
+		
+					case 'e': 
+							smComandi = 0;		
+							Serial.print("e: ");
+							Serial.println(errore);
+						break;
+		
+					case 'v': 
+							smComandi = 0;		
+							Serial.print("v: ");
+							Serial.println(motorSpeed);
+						break;
+
+					case 'l': 
+							smComandi = 0;		
+							Serial.print("l: ");
+							Serial.println(viaLibera);
+
+					case 'r': 
+							smComandi = 0;		
+							Serial.print("r: ");
+							Serial.println(statoRun);
+						break;
+
+					case 'm': 
+							smComandi = 0;		
+							misura = sonarMisura(5);
+							Serial.print("m: ");
+							Serial.println(misura);
+						break;
+				}
+				
+				break;
+			default:
+				smComandi = 0;
+				break;
+		}
+		
+	}// in serialLine.available
+}

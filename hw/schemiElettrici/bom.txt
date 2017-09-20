@@ -1,0 +1,52 @@
+Partlist
+
+Exported from shieldAtmegaArianna_00.brd at 18/06/2017 21:36:41
+
+EAGLE Version 6.5.0 Copyright (c) 1988-2013 CadSoft
+
+Assembly variant: 
+
+Part          Value          Package      Library  Position (mil)        Orientation
+
+ADCH          J_ADCH         1X08         pinhead  (3250 100)            R0
+ADCL          J_ADCL         1X08         pinhead  (2350 100)            R0
+BT_BOARD      J_ESP          1X04         pinhead  (3260 1235)           R90
+C1            100nF          C050-025X075 rcl      (570 1070)            R0
+C3            100nF          C050-025X075 rcl      (2215 1080)           R0
+C4            100nF          C050-025X075 rcl      (1575 360)            R0
+C5                           E5-8,5       rcl      (1085 310)            R90
+COMMUNICATION J_COMM         1X08         pinhead  (3050 2000)           R180
+ENC_DX        J_ENC_DX       1X03         pinhead  (2890 855)            R90
+ENC_SX        J_ENC_SX       1X03         pinhead  (2895 455)            R90
+ESP_BOARD     J_ESP          1X04         pinhead  (275 1790)            R0
+IC1           74AC00N        DIL14        74xx-eu  (555 640)             R270
+IC2           74AC14N        DIL14        74xx-eu  (2215 625)            R270
+ICSP          ICSP           2X03         pinhead  (2555 1100)           R270
+ICSP1         ICSP           2X03         pinhead  (720 1820)            R180
+JP1                          1X01         pinhead  (3700 2000)           R0
+JP2                          1X01         pinhead  (3800 2000)           R0
+JP3                          1X01         pinhead  (3700 300)            R0
+JP4                          1X01         pinhead  (3800 300)            R0
+LASER         J_LASER        1X02         pinhead  (1640 1615)           R90
+L_SIDE_IR     J_L_SIDE_IR    1X04         pinhead  (205 1075)            R90
+MTR_A         j2             1X02         pinhead  (1040 975)            R90
+MTR_B         J1             1X02         pinhead  (1040 695)            R90
+POWER         J3             1X06         pinhead  (1550 100)            R0
+PWMH          J4             1X08         pinhead  (1290 2000)           R180
+PWML          J5             1X08         pinhead  (2150 2000)           R180
+R1            220            0207/10      rcl      (2700 1775)           R0
+R2            330            0207/10      rcl      (2700 1665)           R180
+R3            220            0207/10      rcl      (3075 1600)           R90
+R4            330            0207/10      rcl      (3075 1115)           R90
+R7            10k            0207/10      rcl      (1800 1050)           R90
+R8            220            0207/10      rcl      (2450 1470)           R180
+R9            2200           0207/10      rcl      (2455 1350)           R180
+R10           220            0207/10      rcl      (2685 680)            R90
+R11           2200           0207/10      rcl      (2570 680)            R90
+R_SIDE_IR     J6             1X04         pinhead  (195 435)             R90
+SNR_REAR      J7             1X04         pinhead  (275 1480)            R0
+SRV_PAN       J8             1X03         pinhead  (3250 490)            R90
+SRV_TILT      J10            1X03         pinhead  (3445 490)            R90
+U$1           DRV8803        8X5CARRIER   arianna  (1455 995)            R180
+XIOH          J11            2X08         pinhead  (3750 1550)           R90
+XIOL          J12            2X08         pinhead  (3750 750)            R90
