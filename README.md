@@ -1,6 +1,8 @@
 # Arianna
 Arianna: il robot biblitecario.
 
+il progetto è stato portato in: https://github.com/giorgio323323/ARI_V3
+
 ## Introduzione
 
 Da [Arianna by CSBNO](http://webopac.csbno.net/library/Canegrate/makers-lab/arianna/) :
